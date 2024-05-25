@@ -5,6 +5,7 @@
 #  files
 *
 !*.*
+!Makefile
 
 # Object files
 *.o
