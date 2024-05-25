@@ -1,7 +1,8 @@
 CC = gcc
 CFLAGS = -Wall -g -lncurses
 
-all: tetrix
+
+all: clean tetrix client
 
 tetrix: main.o tetrix.o
 	$(CC) -o tetrix main.o tetrix.o $(CFLAGS)
@@ -12,5 +13,8 @@ main.o: main.c tetrix.h
 tetrix.o: tetrix.c tetrix.h
 	$(CC) -c tetrix.c $(CFLAGS)
 
+client: client.c
+	$(CC) -o client client.c $(CFLAGS)
+
 clean:
-	rm -f tetrix main.o tetrix.o
+	rm -f tetrix main.o tetrix.o client
