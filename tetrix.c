@@ -11,13 +11,26 @@ Tetromino TETROMINOES[7] = {
     { { {0, 0, 7}, {7, 7, 7}, {0, 0, 0} }, 7 }
 };
 
+Tetromino TETROMINOES_Ori[7] = {
+    { { {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 1 },
+    { { {2, 2}, {2, 2} }, 2 },
+    { { {0, 3, 0}, {3, 3, 3}, {0, 0, 0} }, 3 },
+    { { {0, 4, 4}, {4, 4, 0}, {0, 0, 0} }, 4 },
+    { { {5, 5, 0}, {0, 5, 5}, {0, 0, 0} }, 5 },
+    { { {6, 0, 0}, {6, 6, 6}, {0, 0, 0} }, 6 },
+    { { {0, 0, 7}, {7, 7, 7}, {0, 0, 0} }, 7 }
+};
+
 void init_game(GameBoard *board) {
+    init_random_tetromino_list();
     board->width = 10;
     board->height = 20;
     board->game_over = 0;
     board->score = 0;
+    board->tetromino_next_idx = 1;
+    board->tetromino_hold_idx = -1;
     board->current_piece = NULL;
-    board->next_piece = get_random_tetromino();
+    board->next_piece = get_tetromino_ori(board->tetromino_next_idx);
     board->held_piece = NULL;
     board->can_hold = 1;
     board->current_position.x = 0;
@@ -30,8 +43,18 @@ void init_game(GameBoard *board) {
     spawn_new_piece(board);
 }
 
-Tetromino* get_random_tetromino() {
-    return &TETROMINOES[rand() % 7];
+void init_random_tetromino_list() {
+    for (int i = 0; i < 100; ++i) {
+        random_tetromino_list[i] = rand() % 7;
+    }
+}
+
+Tetromino* get_random_tetromino(int idx) {
+    return &TETROMINOES[random_tetromino_list[idx%100]];
+}
+
+Tetromino* get_tetromino_ori(int idx) {
+    return &TETROMINOES_Ori[random_tetromino_list[idx%100]];
 }
 
 void draw_piece(int start_y, int start_x, Tetromino *piece, const char *label) {
@@ -76,13 +99,14 @@ void draw_board(GameBoard *board) {
 
 void spawn_new_piece(GameBoard *board) {
     if (board->current_piece == NULL) {
-        board->current_piece = get_random_tetromino();
+        board->current_piece = get_random_tetromino(0);
     } else {
-        board->current_piece = board->next_piece;
+        board->current_piece = get_random_tetromino(board->tetromino_next_idx);
+        board->tetromino_next_idx++;
     }
     board->current_position.x = board->width / 2 - 2;
     board->current_position.y = 0;
-    board->next_piece = get_random_tetromino();
+    board->next_piece = get_tetromino_ori(board->tetromino_next_idx);
     board->can_hold = 1;
     if (!is_valid_position(board, board->current_piece, board->current_position.x, board->current_position.y)) {
         board->game_over = 1;
@@ -92,11 +116,13 @@ void spawn_new_piece(GameBoard *board) {
 void hold_piece(GameBoard *board) {
     if (!board->can_hold) return;
     if (!board->held_piece) {
-        board->held_piece = board->current_piece;
+        board->tetromino_hold_idx = board->tetromino_next_idx - 1;
+        board->held_piece = get_tetromino_ori(board->tetromino_next_idx - 1);
         spawn_new_piece(board);
     } else {
-        Tetromino *temp = board->current_piece;
-        board->current_piece = board->held_piece;
+        Tetromino *temp = get_tetromino_ori(board->tetromino_next_idx - 1);
+        board->current_piece = get_random_tetromino(board->tetromino_hold_idx);
+        board->tetromino_hold_idx = board->tetromino_next_idx - 1;
         board->held_piece = temp;
         board->current_position.x = board->width / 2 - 2;
         board->current_position.y = 0;

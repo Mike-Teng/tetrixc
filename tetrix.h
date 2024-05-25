@@ -17,6 +17,8 @@ typedef struct {
     int width;
     int height;
     int board[MAX_HEIGHT][MAX_WIDTH];
+    int tetromino_next_idx;
+    int tetromino_hold_idx;
     Tetromino *current_piece;
     Tetromino *next_piece;
     Tetromino *held_piece;
@@ -29,8 +31,12 @@ typedef struct {
     int can_hold;
 } GameBoard;
 
+int random_tetromino_list[100];
+
 void init_game(GameBoard *board);
-Tetromino* get_random_tetromino();
+void init_random_tetromino_list();
+Tetromino* get_random_tetromino(int idx);
+Tetromino* get_tetromino_ori(int idx);
 void draw_piece(int start_y, int start_x, Tetromino *piece, const char *label);
 void draw_game_area_border(int offset_y, int offset_x, int height, int width);
 void draw_board(GameBoard *board);
