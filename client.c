@@ -130,23 +130,23 @@ int main(int argc, char *argv[]) {
                 ch = getchar();
                 switch (ch) {
                     case 'A': // 上箭頭鍵
-                        printf("UP\n");
-                        send(client_fd, "4", sizeof("UP"), 0);
+                        //printf("UP\n");
+                        send(client_fd, "4", sizeof("4"), 0);
                         // sleep(1);
                         break;
                     case 'B': // 下箭頭鍵
-                        printf("DOWN\n");
-                        send(client_fd, "3", sizeof("DOWN"), 0);
+                        //printf("DOWN\n");
+                        send(client_fd, "3", sizeof("3"), 0);
                         // sleep(1);
                         break;
                     case 'D': // 左箭頭鍵
-                        printf("LEFT\n");
-                        send(client_fd, "1", sizeof("LEFT"), 0);
+                        //printf("LEFT\n");
+                        send(client_fd, "1", sizeof("1"), 0);
                         // sleep(1);
                         break;
                     case 'C': // 右箭頭鍵
-                        printf("RIGHT\n");
-                        send(client_fd, "2", sizeof("RIGHT"), 0);
+                        //printf("RIGHT\n");
+                        send(client_fd, "2", sizeof("2"), 0);
                         // sleep(1);
                         break;
                     default:
@@ -154,8 +154,8 @@ int main(int argc, char *argv[]) {
                 }
             }
             else if (ch == ' '){
-                printf("SPACE\n");
-                send(client_fd, "5", sizeof("SPACE"), 0);
+                // printf("SPACE\n");
+                send(client_fd, "5", sizeof("5"), 0);
             }
         }
     }
