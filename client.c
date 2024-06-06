@@ -8,7 +8,19 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+// shared memory
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <sys/types.h>
+#include <pthread.h>
 
+#include "tetrix.h"
+
+GameBoard board;
+char board_buffer[3000];
+char *shm;
+// Define mutex for the shared variable
+pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
 
 void enableRawMode() {
     struct termios term;
@@ -50,6 +62,22 @@ int kbhit() {
 }
 
 int main(int argc, char *argv[]) {
+    // shared memory
+    key_t key = 1999;
+    char *shm;
+    int shmid;
+    // create shared memory
+    if ((shmid = shmget(key, 3000, IPC_CREAT | 0666)) < 0) {
+        perror("shmget for client");
+        exit(1);
+    }
+    // attach shared memory
+    if ((shm = shmat(shmid, NULL, 0)) == (char *) -1) {
+        perror("shmat for client");
+        exit(1);
+    }
+
+
     // socket
     char *server_ip = argv[1];
     int server_port = atoi(argv[2]);
@@ -87,6 +115,9 @@ int main(int argc, char *argv[]) {
     enableRawMode();
 
     while (1) {
+        // recv(client_fd, board_buffer, sizeof(board_buffer), 0);
+        // deserialize_game_board(&board, shm);
+
         if (kbhit()) {
             ch = getchar();
             if (ch == 'q') {

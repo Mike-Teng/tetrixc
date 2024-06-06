@@ -13,8 +13,8 @@ main.o: main.c tetrix.h
 tetrix.o: tetrix.c tetrix.h
 	$(CC) -c tetrix.c $(CFLAGS)
 
-client: client.c
-	$(CC) -o client client.c $(CFLAGS)
+client: client.c tetrix.o
+	$(CC) -o client client.c tetrix.o $(CFLAGS)
 
 clean:
 	rm -f tetrix main.o tetrix.o client
